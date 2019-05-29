@@ -32,17 +32,11 @@ class NaiveBayes:
         self.numFolds = 10
 
         # TODO
-        # Implement a multinomial naive bayes classifier and a naive bayes classifier with boolean features. The flag
-        # naiveBayesBool is used to signal to your methods that boolean naive bayes should be used instead of the usual
-        # algorithm that is driven on feature counts. Remember the boolean naive bayes relies on the presence and
-        # absence of features instead of feature counts.
+        # Implement a multinomial naive bayes classifier and a naive bayes classifier with boolean features. The flag naiveBayesBool is used to signal to your methods that boolean naive bayes should be used instead of the usual algorithm that is driven on feature counts. Remember the boolean naive bayes relies on the presence and absence of features instead of feature counts.
 
-        # When the best model flag is true, use your new features and or heuristics that are best performing on the
-        # training and test set.
+        # When the best model flag is true, use your new features and or heuristics that are best performing on the training and test set.
 
-        # If any one of the flags filter stop words, boolean naive bayes and best model flags are high, the other two
-        # should be off. If you want to include stop word removal or binarization in your best performing model, you
-        # will need to write the code accordingly.
+        # If any one of the flags filter stop words, boolean naive bayes and best model flags are high, the other two should be off. If you want to include stop word removal or binarization in your best performing model, you will need to write the code accordingly.
 
     def classify(self, words):
         """
