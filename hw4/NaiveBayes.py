@@ -4,6 +4,9 @@ import os
 import math
 import operator
 
+from math import log
+from collections import defaultdict
+
 class NaiveBayes:
     class TrainSplit:
         """
@@ -32,11 +35,39 @@ class NaiveBayes:
         self.numFolds = 10
 
         # TODO
-        # Implement a multinomial naive bayes classifier and a naive bayes classifier with boolean features. The flag naiveBayesBool is used to signal to your methods that boolean naive bayes should be used instead of the usual algorithm that is driven on feature counts. Remember the boolean naive bayes relies on the presence and absence of features instead of feature counts.
+        '''
+        Implement a multinomial naive bayes classifier and a naive bayes classifier with boolean features. The flag naiveBayesBool is used to signal to your methods that boolean naive bayes should be used instead of the usual algorithm that is driven on feature counts. Remember the boolean naive bayes relies on the presence and absence of features instead of feature counts.
 
-        # When the best model flag is true, use your new features and or heuristics that are best performing on the training and test set.
+        When the best model flag is true, use your new features and or heuristics that are best performing on the training and test set.
 
-        # If any one of the flags filter stop words, boolean naive bayes and best model flags are high, the other two should be off. If you want to include stop word removal or binarization in your best performing model, you will need to write the code accordingly.
+        If any one of the flags filter stop words, boolean naive bayes and best model flags are high, the other two should be off. If you want to include stop word removal or binarization in your best performing model, you will need to write the code accordingly.
+        '''
+
+        # To start up, I followed the data structures procedures as shown in this Medium article: https://towardsdatascience.com/unfolding-na%C3%AFve-bayes-from-scratch-2e86dcae4b01
+
+        # The custom data structure for training and testing
+        
+        self.bankOfWords = {
+            # each dictionary stores the frequency of each word under each classification
+            "pos": defaultdict(lambda: 0),
+            "neg": defaultdict(lambda: 0)
+        }
+        
+        self.uniqueVocabs = defaultdict(lambda: 0)
+        
+        self.vocabTotalFreqByClass = {
+            "pos": 0,
+            "neg": 0
+        }
+
+        self.docTotal = 0
+        self.docCount = {
+            "pos": 0,
+            "neg": 0
+        }
+        
+
+        
 
     def classify(self, words):
         """
@@ -49,7 +80,33 @@ class NaiveBayes:
         # classify a list of words and return the 'pos' or 'neg' classification
         # Write code here
 
-        return 'pos'
+        logPosProb = log(self.docCount["pos"]) - log(self.docTotal)
+        logNegProb = log(self.docCount["neg"]) - log(self.docTotal)
+
+        # Using Laplace smoothing
+        # Reference: https://medium.com/syncedreview/applying-multinomial-naive-bayes-to-nlp-problems-a-practical-explanation-4f5271768ebf
+        smoothParam = 1.0
+        if self.naiveBayesBool:
+            words = self.removeDuplicates(words)
+            smoothParam = 2.0
+        elif self.bestModel:
+            words = self.removeDuplicates(words)
+            smoothParam = 5.0
+
+        posScore = logPosProb
+        negScore = logNegProb
+
+        for w in words:
+            posScore += log(self.bankOfWords["pos"][w] + smoothParam)
+            posScore -= log(self.vocabTotalFreqByClass["pos"] + len(self.uniqueVocabs) * smoothParam)
+
+            negScore += log(self.bankOfWords["neg"][w] + smoothParam)
+            negScore -= log(self.vocabTotalFreqByClass["neg"] + len(self.uniqueVocabs) * smoothParam)
+
+        if posScore >= negScore:
+            return "pos"
+        else:
+            return "neg"
 
     def addDocument(self, classifier, words):
         """
@@ -60,7 +117,24 @@ class NaiveBayes:
         # Train model on document with label classifiers and words
         # Write code here
 
+        self.docTotal += 1
+        self.docCount[classifier] += 1
+
+        if self.naiveBayesBool:
+            words = self.removeDuplicates(words)
+
+        for w in words:
+            if w not in self.uniqueVocabs:
+                self.uniqueVocabs[w] += 1
+            self.bankOfWords[classifier][w] += 1
+            self.vocabTotalFreqByClass[classifier] += 1
+
         pass
+
+    def removeDuplicates(self, words):
+        tempSet = set(words)
+        finalWords = list(tempSet)
+        return finalWords
 
     def readFile(self, fileName):
         """
@@ -98,6 +172,7 @@ class NaiveBayes:
             if self.stopWordsFilter:
                 words = self.filterStopWords(words)
             self.addDocument(doc.classifier, words)
+
 
     def crossValidationSplits(self, trainDir):
         """Returns a lsit of TrainSplits corresponding to the cross validation splits."""
