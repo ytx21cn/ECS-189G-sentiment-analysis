@@ -34,14 +34,14 @@ class NaiveBayes:
         self.naiveBayesBool = False
         self.numFolds = 10
 
-        # TODO
-        '''
+        # COMPLETED
+        """
         Implement a multinomial naive bayes classifier and a naive bayes classifier with boolean features. The flag naiveBayesBool is used to signal to your methods that boolean naive bayes should be used instead of the usual algorithm that is driven on feature counts. Remember the boolean naive bayes relies on the presence and absence of features instead of feature counts.
-
+        
         When the best model flag is true, use your new features and or heuristics that are best performing on the training and test set.
 
         If any one of the flags filter stop words, boolean naive bayes and best model flags are high, the other two should be off. If you want to include stop word removal or binarization in your best performing model, you will need to write the code accordingly.
-        '''
+        """
 
         # To start up, I followed the data structures procedures as shown in this Medium article: https://towardsdatascience.com/unfolding-na%C3%AFve-bayes-from-scratch-2e86dcae4b01
 
@@ -67,8 +67,6 @@ class NaiveBayes:
         }
         
 
-        
-
     def classify(self, words):
         """
         Classify a list of words and return a positive or negative sentiment
@@ -76,7 +74,7 @@ class NaiveBayes:
         if self.stopWordsFilter:
             words = self.filterStopWords(words)
 
-        # TODO
+        # COMPLETED
         # classify a list of words and return the 'pos' or 'neg' classification
         # Write code here
 
@@ -113,7 +111,7 @@ class NaiveBayes:
         Train your model on a document with label classifier (pos or neg) and words (list of strings). You should
         store any structures for your classifier in the naive bayes class. This function will return nothing
         """
-        # TODO
+        # COMPLETED
         # Train model on document with label classifiers and words
         # Write code here
 
@@ -128,8 +126,7 @@ class NaiveBayes:
                 self.uniqueVocabs[w] += 1
             self.bankOfWords[classifier][w] += 1
             self.vocabTotalFreqByClass[classifier] += 1
-
-        pass
+        
 
     def removeDuplicates(self, words):
         tempSet = set(words)
