@@ -46,15 +46,15 @@ class NaiveBayes:
         # To start up, I followed the data structures procedures as shown in this Medium article: https://towardsdatascience.com/unfolding-na%C3%AFve-bayes-from-scratch-2e86dcae4b01
 
         # The custom data structure for training and testing
-        
+
         self.bankOfWords = {
             # each dictionary stores the frequency of each word under each classification
             "pos": defaultdict(lambda: 0),
             "neg": defaultdict(lambda: 0)
         }
-        
+
         self.uniqueVocabs = defaultdict(lambda: 0)
-        
+
         self.vocabTotalFreqByClass = {
             "pos": 0,
             "neg": 0
@@ -65,7 +65,7 @@ class NaiveBayes:
             "pos": 0,
             "neg": 0
         }
-        
+
 
     def classify(self, words):
         """
@@ -83,13 +83,13 @@ class NaiveBayes:
 
         # Using Laplace smoothing
         # Reference: https://medium.com/syncedreview/applying-multinomial-naive-bayes-to-nlp-problems-a-practical-explanation-4f5271768ebf
-        smoothParam = 1.0
+
+        words = self.removeDuplicates(words)
+        smoothParam = 5.5
         if self.naiveBayesBool:
-            words = self.removeDuplicates(words)
             smoothParam = 2.0
         elif self.bestModel:
-            words = self.removeDuplicates(words)
-            smoothParam = 5.0
+            smoothParam = 5.5
 
         posScore = logPosProb
         negScore = logNegProb
@@ -126,7 +126,7 @@ class NaiveBayes:
                 self.uniqueVocabs[w] += 1
             self.bankOfWords[classifier][w] += 1
             self.vocabTotalFreqByClass[classifier] += 1
-        
+
 
     def removeDuplicates(self, words):
         tempSet = set(words)
